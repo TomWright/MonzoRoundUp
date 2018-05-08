@@ -7,9 +7,9 @@ Rounds up purchases to the nearest whole number and deposits that remainder to a
 ## Build the binary
 
 ```
-RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 go get github.com/tomwright/monzoroundup
-cd $GOPATH/src/github.com/monzoroundup
+cd $GOPATH/src/github.com/tomwright/monzoroundup
 dep ensure
 cd cmd/roundup
 go build -i -o $GOPATH/bin/roundup
