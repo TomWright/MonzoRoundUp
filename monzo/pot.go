@@ -1,9 +1,8 @@
-package monzoroundup
+package monzo
 
 import (
 	"fmt"
 	"net/http"
-	"github.com/tomwright/monzoroundup/auth"
 	"log"
 	"io/ioutil"
 	"errors"
@@ -21,46 +20,29 @@ type Pot struct {
 	Deleted  bool   `json:"deleted"`
 }
 
-func listPots() ([]Pot, error) {
+func ListPots(token *Token) ([]Pot, error) {
 	url := fmt.Sprintf("https://api.monzo.com/pots")
 
 	req, err := http.NewRequest("GET", url, nil)
-	auth.WrapRequest(req)
+	wrapRequestWithToken(req, token)
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	body, _ := ioutil.ReadAll(resp.Body)
-
 	if resp.StatusCode/100 != 2 {
 		return nil, errors.New("could not list accounts: " + string(body))
 	}
 
 	result := map[string][]Pot{}
-
 	err = json.Unmarshal(body, &result)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	return result["pots"], nil
-}
-
-func getRoundUpPot() (Pot, error) {
-	pots, err := listPots()
-	if err != nil {
-		return Pot{}, err
-	}
-
-	for _, pot := range pots {
-		if pot.Name == "RoundUp" {
-			return pot, nil
-		}
-	}
-
-	return Pot{}, errors.New("no roundup pot exists")
 }

@@ -1,11 +1,6 @@
-package monzoroundup
+package monzo
 
-type Event struct {
-	Type string    `json:"type"`
-	Data EventData `json:"data"`
-}
-
-type EventData struct {
+type TransactionCreatedEvent struct {
 	AccountID   string   `json:"account_id"`
 	Amount      int64    `json:"amount"`
 	Created     string   `json:"created"`
@@ -15,5 +10,5 @@ type EventData struct {
 	Category    string   `json:"category"`
 	IsLoad      bool     `json:"is_load"`
 	Settled     bool     `json:"settled"`
-	Merchant    merchant `json:"merchant"`
+	Merchant    Merchant `json:"merchant"`
 }
