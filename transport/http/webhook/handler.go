@@ -12,5 +12,6 @@ func Init(router *httprouter.Router) {
 }
 
 func handleEvent(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusAccepted)
+	w.Write([]byte("Accepted"))
 }

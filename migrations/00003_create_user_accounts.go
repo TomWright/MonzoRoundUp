@@ -3,6 +3,8 @@ package migrations
 import (
 	"database/sql"
 	"github.com/pressly/goose"
+	"fmt"
+	"os"
 )
 
 func init() {
@@ -10,19 +12,14 @@ func init() {
 }
 
 func Up00003(tx *sql.Tx) error {
-	_, err := tx.Exec(`
-		CREATE TABLE userTokens (
-		id INT AUTO_INCREMENT,
-		accessToken   VARCHAR(255),
-		clientId   VARCHAR(255),
-		refreshToken   VARCHAR(255),
-		tokenType   ENUM('BEARER'),
-		userId   INT,
-		expiresAt   DATETIME,
+	_, err := tx.Exec(fmt.Sprintf(`
+		CREATE TABLE %s.userAccounts (
+		id   VARCHAR(100),
+		userId INT,
 		PRIMARY KEY (id),
-		INDEX(userId)
+		INDEX (userId)
 		);
-	`)
+	`, os.Getenv("MYSQL_DB")))
 	if err != nil {
 		return err
 	}
@@ -30,9 +27,9 @@ func Up00003(tx *sql.Tx) error {
 }
 
 func Down00003(tx *sql.Tx) error {
-	_, err := tx.Exec(`
-		DROP TABLE userTokens;
-	`)
+	_, err := tx.Exec(fmt.Sprintf(`
+		DROP TABLE %s.userAccounts;
+	`, os.Getenv("MYSQL_DB")))
 	if err != nil {
 		return err
 	}

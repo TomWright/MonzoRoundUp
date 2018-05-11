@@ -13,5 +13,5 @@ const (
 func Init(router *httprouter.Router) {
 	router.POST(LoginEndpoint, loginHandler)
 	router.POST(RegisterEndpoint, registerHandler)
-	router.POST(CallbackEndpoint, callbackHandler)
+	router.GET(CallbackEndpoint, callbackHandler)
 }

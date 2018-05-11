@@ -4,18 +4,21 @@ services:
 
   app:
     depends_on:
-      - mysql
+      - db
     build:
-      context: ./docker/app
+      context: ./
+      dockerfile: ./docker/app/Dockerfile
     ports:
       - "8000:8000"
     env_file:
       - ./docker/app/.env
 
-  mysql:
-      build:
-        context: ./docker/mysql
-      ports:
-        - "3306:3306"
-      env_file:
-        - ./docker/mysql/.env
+  db:
+    build:
+      context: ./
+      dockerfile: ./docker/mysql/Dockerfile
+    ports:
+      - "3306:3306"
+      - "3306"
+    env_file:
+      - ./docker/mysql/.env

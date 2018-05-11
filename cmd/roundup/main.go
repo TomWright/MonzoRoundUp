@@ -45,9 +45,24 @@ func main() {
 }
 
 func getDB() *sql.DB {
-	db, err := sql.Open("mysql", os.Getenv("MYSQL_DSN"))
+	mysqlUser := os.Getenv("MYSQL_USER")
+	mysqlPass := os.Getenv("MYSQL_PASS")
+	mysqlHost := os.Getenv("MYSQL_HOST")
+	mysqlPort := os.Getenv("MYSQL_PORT")
+	mysqlDB := os.Getenv("MYSQL_DB")
+
+	mysqlHostPortStr := ""
+	if mysqlHost != "" || mysqlPort != "" {
+		mysqlHostPortStr = fmt.Sprintf("tcp(%s:%s)", mysqlHost, mysqlPort)
+	}
+
+	mysqlDSN := fmt.Sprintf("%s:%s@%s/%s", mysqlUser, mysqlPass, mysqlHostPortStr, mysqlDB)
+
+	log.Printf("Connecting to db: %s", mysqlDSN)
+
+	dbConn, err := sql.Open("mysql", mysqlDSN)
 	if err != nil {
 		panic(err)
 	}
-	return db
+	return dbConn
 }

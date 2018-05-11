@@ -22,9 +22,9 @@ func (i *refreshToken) work(tokenModel token.Model, userModel user.Model) {
 		return
 	}
 
-	for _, t := range tokens {
+	for userId, t := range tokens {
 		if t.ExpiresWithin(time.Minute * 5) {
-			u, err := userModel.FetchByID(t.UserID)
+			u, err := userModel.FetchByID(userId)
 			if err != nil {
 				log.Printf("token `%d` not refreshed. could not fetch user: %s\n", t.ID, err)
 				return
@@ -36,7 +36,7 @@ func (i *refreshToken) work(tokenModel token.Model, userModel user.Model) {
 				return
 			}
 
-			_, err = tokenModel.Insert(t.UserID, newToken)
+			_, err = tokenModel.Insert(userId, newToken)
 			if err != nil {
 				log.Printf("token `%d` not refreshed. could not insert new token: %s\n", t.ID, err)
 				return

@@ -15,8 +15,8 @@ func callbackHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params
 	err := r.ParseForm()
 	if err != nil {
 		log.Printf("could not parse form: %v\n", err)
-		w.Write([]byte("invalid request provided"))
 		w.WriteHeader(400)
+		w.Write([]byte("invalid request provided"))
 		return
 	}
 
@@ -26,23 +26,23 @@ func callbackHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params
 	userId, err := strconv.ParseInt(requestState, 10, 64)
 	if err != nil {
 		log.Printf("Invalid state. Not int. Got `%v` of type `%t`\n", requestState, requestState)
-		w.Write([]byte("invalid state"))
 		w.WriteHeader(400)
+		w.Write([]byte("invalid state"))
 		return
 	}
 
 	u, err := userModel.FetchByID(userId)
 	if err != nil {
 		log.Printf("Could not fetch user: %s\n", err)
-		w.Write([]byte("Internal Server Error"))
 		w.WriteHeader(500)
+		w.Write([]byte("Internal Server Error"))
 		return
 	}
 
 	if u == nil {
 		log.Printf("Invalid state. Invalid user ID `%d`\n", userId)
-		w.Write([]byte("invalid state"))
 		w.WriteHeader(400)
+		w.Write([]byte("invalid state"))
 		return
 	}
 
@@ -51,20 +51,20 @@ func callbackHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params
 	token, err := monzo.ExchangeAuthCode(u.OAuthID, u.OAuthSecret, authCode)
 	if err != nil {
 		log.Printf("could not exchange auth code `%s`: %s", authCode, err)
-		w.Write([]byte("Internal Server Error"))
 		w.WriteHeader(500)
+		w.Write([]byte("Internal Server Error"))
 	}
 
 	_, err = tokenModel.Insert(userId, token)
 	if err != nil {
 		log.Printf("could not insert token: %s\n", err)
-		w.Write([]byte("Internal Server Error"))
 		w.WriteHeader(500)
+		w.Write([]byte("Internal Server Error"))
 		return
 	}
 
 	worker.InitUser.C <- *u
 
-	w.Write([]byte("Success"))
 	w.WriteHeader(200)
+	w.Write([]byte("Success"))
 }

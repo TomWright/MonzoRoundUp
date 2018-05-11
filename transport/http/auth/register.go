@@ -18,8 +18,8 @@ type registerRequest struct {
 func registerHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		w.Write([]byte("missing request body"))
 		w.WriteHeader(400)
+		w.Write([]byte("missing request body"))
 		return
 	}
 
@@ -27,22 +27,22 @@ func registerHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params
 	err = json.Unmarshal(body, &req)
 	if err != nil {
 		log.Printf("could not decode request: %v\n", err)
-		w.Write([]byte("invalid request provided"))
 		w.WriteHeader(400)
+		w.Write([]byte("invalid request provided"))
 		return
 	}
 
 	u, err := userModel.FetchByUserName(req.UserName)
 	if err != nil {
 		log.Printf("could not fetch user by username: %v\n", err)
-		w.Write([]byte("Internal server error"))
 		w.WriteHeader(500)
+		w.Write([]byte("Internal server error"))
 		return
 	}
 
 	if u != nil {
-		w.Write([]byte("Username already taken"))
 		w.WriteHeader(401)
+		w.Write([]byte("Username already taken"))
 		return
 	}
 
@@ -54,5 +54,6 @@ func registerHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params
 		return
 	}
 
-	http.Redirect(w, r, LoginEndpoint, 301)
+	w.Write([]byte("Success"))
+	w.WriteHeader(200)
 }

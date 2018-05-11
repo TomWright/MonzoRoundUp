@@ -9,7 +9,7 @@ type Token struct {
 	ExpiresIn    int64  `json:"expires_in"`
 	RefreshToken string `json:"refresh_token"`
 	TokenType    string `json:"token_type"`
-	UserID       int64  `json:"user_id"`
+	UserID       string  `json:"user_id"`
 	ExpiresAt    time.Time
 }
 

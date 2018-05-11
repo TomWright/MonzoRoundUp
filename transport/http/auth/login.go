@@ -17,8 +17,8 @@ type loginRequest struct {
 func loginHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		w.Write([]byte("missing request body"))
 		w.WriteHeader(400)
+		w.Write([]byte("missing request body"))
 		return
 	}
 
@@ -26,24 +26,25 @@ func loginHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	err = json.Unmarshal(body, &req)
 	if err != nil {
 		log.Printf("could not decode request: %v\n", err)
-		w.Write([]byte("invalid request provided"))
 		w.WriteHeader(400)
+		w.Write([]byte("invalid request provided"))
 		return
 	}
 
 	u, err := userModel.FetchByUserName(req.UserName)
 	if err != nil {
 		log.Printf("could not fetch user by username: %v\n", err)
-		w.Write([]byte("Internal server error"))
 		w.WriteHeader(500)
+		w.Write([]byte("Internal server error"))
 		return
 	}
 
 	if u == nil {
-		w.Write([]byte("Invalid username"))
 		w.WriteHeader(401)
+		w.Write([]byte("Invalid username"))
 		return
 	}
 
-	http.Redirect(w, r, monzo.GenerateOauthUrl(u.OAuthID, u.ID), 301)
+	w.WriteHeader(200)
+	w.Write([]byte(monzo.GenerateOauthUrl(u.OAuthID, u.ID)))
 }
