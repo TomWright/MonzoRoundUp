@@ -49,11 +49,11 @@ func registerHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params
 	u, err = userModel.Create(req.UserName, req.OAuthID, req.OAuthSecret)
 	if err != nil {
 		log.Printf("could not create user: %v\n", err)
-		w.Write([]byte("Internal server error"))
 		w.WriteHeader(500)
+		w.Write([]byte("Internal server error"))
 		return
 	}
 
-	w.Write([]byte("Success"))
 	w.WriteHeader(200)
+	w.Write([]byte("Success"))
 }

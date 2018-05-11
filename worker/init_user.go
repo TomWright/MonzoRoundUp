@@ -37,7 +37,7 @@ func (i *initUser) Work(tokenModel token.Model) {
 
 		accounts, err := monzo.ListAccounts(t)
 		if err != nil {
-			log.Printf("could not user accounts: %s\n", err)
+			log.Printf("could not get user accounts: %s\n", err)
 			continue
 		}
 
@@ -48,16 +48,24 @@ func (i *initUser) Work(tokenModel token.Model) {
 				continue
 			}
 
+			if account.Closed {
+				log.Println("skipping closed account")
+				continue
+			}
+
 			foundHook := false
 		hookLoop:
 			for _, hook := range hooks {
 				if hook.URL == expectedURL {
+					log.Printf("Hook `%s` was found as expected", expectedURL)
 					foundHook = true
 					break hookLoop
 				}
 			}
 
 			if ! foundHook {
+				log.Printf("Hook `%s` was not found. it will be created now", expectedURL)
+
 				_, err := monzo.CreateWebHook(t, monzo.WebHook{
 					AccountID: account.ID,
 					URL:       expectedURL,

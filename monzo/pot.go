@@ -24,7 +24,7 @@ func ListPots(token *Token) ([]Pot, error) {
 	url := fmt.Sprintf("https://api.monzo.com/pots")
 
 	req, err := http.NewRequest("GET", url, nil)
-	wrapRequestWithToken(req, token)
+	req = wrapRequestWithToken(req, token)
 
 	client := &http.Client{}
 	resp, err := client.Do(req)

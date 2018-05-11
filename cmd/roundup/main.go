@@ -56,7 +56,7 @@ func getDB() *sql.DB {
 		mysqlHostPortStr = fmt.Sprintf("tcp(%s:%s)", mysqlHost, mysqlPort)
 	}
 
-	mysqlDSN := fmt.Sprintf("%s:%s@%s/%s", mysqlUser, mysqlPass, mysqlHostPortStr, mysqlDB)
+	mysqlDSN := fmt.Sprintf("%s:%s@%s/%s?parseTime=true", mysqlUser, mysqlPass, mysqlHostPortStr, mysqlDB)
 
 	log.Printf("Connecting to db: %s", mysqlDSN)
 

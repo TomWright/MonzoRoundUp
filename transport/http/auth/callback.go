@@ -53,6 +53,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params
 		log.Printf("could not exchange auth code `%s`: %s", authCode, err)
 		w.WriteHeader(500)
 		w.Write([]byte("Internal Server Error"))
+		return
 	}
 
 	_, err = tokenModel.Insert(userId, token)

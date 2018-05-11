@@ -22,7 +22,7 @@ func DepositToPotFromAccount(token *Token, potID string, accountID string, amoun
 	req, err := http.NewRequest("POST", u, strings.NewReader(form.Encode()))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
-	wrapRequestWithToken(req, token)
+	req = wrapRequestWithToken(req, token)
 
 	client := &http.Client{}
 	resp, err := client.Do(req)

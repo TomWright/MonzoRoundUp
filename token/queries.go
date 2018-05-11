@@ -71,7 +71,7 @@ func (m *SqlModel) FetchByID(id int64) (*monzo.Token, int64, error) {
 		return nil, userId, nil
 	}
 	if err != nil {
-		return nil, userId, err
+		return nil, userId, errors.New(fmt.Sprintf("failed to scan row when fetching token: %s", err))
 	}
 
 	return &u, userId, nil
@@ -102,21 +102,21 @@ func (m *SqlModel) FetchByUserID(userID string) (*monzo.Token, error) {
 
 func (m *SqlModel) Insert(userID int64, token *monzo.Token) (*monzo.Token, error) {
 	stmt, err := m.db.Prepare("" +
-		"INSERT INTO userTokens (accessToken, clientId, refreshToken, tokenType, userId, expiresAt)" +
-		"VALUES (?, ?, ?, ?, ?, ?);")
+		"INSERT INTO userTokens (accessToken, clientId, refreshToken, tokenType, monzoUserId, userId, expiresAt)" +
+		"VALUES (?, ?, ?, ?, ?, ?, ?);")
 	if err != nil {
 		return nil, err
 	}
 	defer stmt.Close()
 
-	res, err := stmt.Exec(token.AccessToken, token.ClientID, token.RefreshToken, token.TokenType, userID, token.ExpiresAt)
+	res, err := stmt.Exec(token.AccessToken, token.ClientID, token.RefreshToken, token.TokenType, token.UserID, userID, token.ExpiresAt)
 	if err != nil {
-		return nil, err
+		return nil, errors.New(fmt.Sprintf("failed to run insert query: %s", err))
 	}
 
 	lastId, err := res.LastInsertId()
 	if err != nil {
-		return nil, err
+		return nil, errors.New(fmt.Sprintf("failed to get last insert id: %s", err))
 	}
 
 	newToken, _, err := m.FetchByID(lastId)

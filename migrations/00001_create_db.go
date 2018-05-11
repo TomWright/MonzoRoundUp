@@ -12,9 +12,7 @@ func init() {
 }
 
 func Up00001(tx *sql.Tx) error {
-	_, err := tx.Exec(fmt.Sprintf(`
-		CREATE DATABASE %s;
-	`, os.Getenv("MYSQL_DB")))
+	_, err := tx.Exec(fmt.Sprintf(`CREATE DATABASE IF NOT EXISTS %s;`, os.Getenv("MYSQL_DB")))
 	if err != nil {
 		return err
 	}
@@ -22,9 +20,7 @@ func Up00001(tx *sql.Tx) error {
 }
 
 func Down00001(tx *sql.Tx) error {
-	_, err := tx.Exec(fmt.Sprintf(`
-		DROP DATABASE %s;
-	`, os.Getenv("MYSQL_DB")))
+	_, err := tx.Exec(fmt.Sprintf(`DROP DATABASE %s;`, os.Getenv("MYSQL_DB")))
 	if err != nil {
 		return err
 	}

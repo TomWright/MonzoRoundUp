@@ -20,7 +20,7 @@ func ListAccounts(token *Token) ([]*Account, error) {
 	url := fmt.Sprintf("https://api.monzo.com/accounts")
 
 	req, err := http.NewRequest("GET", url, nil)
-	wrapRequestWithToken(req, token)
+	req = wrapRequestWithToken(req, token)
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
